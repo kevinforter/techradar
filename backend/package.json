@@ -12,5 +12,8 @@
   "description": "backend for techradar project",
   "devDependencies": {
     "prettier": "3.5.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7"
   }
 }
