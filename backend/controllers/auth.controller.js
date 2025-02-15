@@ -1,4 +1,12 @@
 const user = require('../models/user.model');
+const token = require('../models/refreshToken.model');
+const {
+  authToken,
+  authRole,
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} = require('../middleware/auth');
 const bcrypt = require('bcrypt');
 
 const register = async (req, res) => {
@@ -26,6 +34,37 @@ const register = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  try {
+    const loginUser = req.body;
+    const existingUser = await user.findOne({ username: loginUser.username });
+
+    if (!existingUser) return res.status(404).json({ error: 'User not found' });
+    if (!(await bcrypt.compare(loginUser.password, existingUser.password)))
+      return res.status(401).json({ error: 'Wrong Password' });
+
+    const userObj = {
+      username: existingUser.username,
+      role: existingUser.role,
+    };
+
+    const accessToken = generateAccessToken(userObj);
+    const refreshToken = generateRefreshToken(userObj);
+
+    const refreshTokenDoc = await token.findOneAndUpdate(
+      { user: existingUser._id },
+      { token: refreshToken },
+      { new: true, upsert: true },
+    );
+    res
+      .status(200)
+      .json({ accessToken: accessToken, refreshToken: refreshTokenDoc });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   register,
+  login,
 };
