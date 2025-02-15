@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const colors = require('colors');
 
 const connect = (app, port) => {
   mongoose
@@ -6,7 +7,7 @@ const connect = (app, port) => {
       `${process.env.ME_CONFIG_MONGODB_URL}${process.env.MONGO_INITDB_DATABASE}?authSource=admin`,
     )
     .then(() => {
-      console.log('Connected to Database');
+      console.log(colors.green('Connected to Database'));
       console.log(
         `${process.env.ME_CONFIG_MONGODB_URL}${process.env.MONGO_INITDB_DATABASE}`,
       );
@@ -16,7 +17,7 @@ const connect = (app, port) => {
       });
     })
     .catch(() => {
-      console.error('Not able to conn to MongoDB!');
+      console.error(colors.red.underline('Not able to conn to MongoDB!'));
     });
 };
 
