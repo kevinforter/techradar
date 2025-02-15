@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const db = require('./config/database');
 const statusRoute = require('./routes/status.route');
+const authRoute = require('./routes/auth.route');
 
 // Middleware to parse JSON bodies from incoming requests
 app.use(express.json());
@@ -14,3 +15,5 @@ db.connect(app, `${process.env.PORT}`);
 
 // Status route
 app.use('/api/v1/status', statusRoute);
+
+app.use('/api/v1/auth', authRoute);
