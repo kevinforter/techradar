@@ -9,5 +9,8 @@
   "keywords": [],
   "author": "Kevin Forter",
   "license": "ISC",
-  "description": "backend for techradar project"
+  "description": "backend for techradar project",
+  "devDependencies": {
+    "prettier": "3.5.1"
+  }
 }
