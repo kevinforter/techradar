@@ -16,4 +16,4 @@ db.connect(app, `${process.env.PORT}`);
 // Status route
 app.use('/api/v1/status', statusRoute);
 
-app.use('/api/v1/auth', authRoute);
+app.use('/api/v1', authRoute);
