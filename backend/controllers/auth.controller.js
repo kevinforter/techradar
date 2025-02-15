@@ -1,5 +1,6 @@
 const user = require('../models/user.model');
 const token = require('../models/refreshToken.model');
+const audit = require('../models/auditLogins.model');
 const {
   authToken,
   authRole,
@@ -47,6 +48,10 @@ const login = async (req, res) => {
       username: existingUser.username,
       role: existingUser.role,
     };
+
+    if (existingUser.role === 'CTO' || existingUser.role === 'Tech-Lead') {
+      await audit.create({ user: existingUser._id });
+    }
 
     const accessToken = generateAccessToken(userObj);
     const refreshToken = generateRefreshToken(userObj);

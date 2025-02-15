@@ -9,6 +9,7 @@ const auditLoginsSchema = mongoose.Schema(
     },
     loginAt: {
       type: Date,
+      default: Date.now(),
     },
     logoutAt: {
       type: Date,
