@@ -69,7 +69,18 @@ const login = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    const refreshToken = req.body.token;
+    await token.deleteOne({ token: refreshToken });
+    res.sendStatus(204);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
+  logout,
 };
