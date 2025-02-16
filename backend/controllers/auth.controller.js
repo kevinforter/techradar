@@ -1,5 +1,5 @@
 const user = require('../models/user.model');
-const token = require('../models/refreshToken.model');
+const refreshTokenModel = require('../models/refreshToken.model');
 const audit = require('../models/auditLogins.model');
 const {
   authToken,
@@ -56,7 +56,7 @@ const login = async (req, res) => {
     const accessToken = generateAccessToken(userObj);
     const refreshToken = generateRefreshToken(userObj);
 
-    const refreshTokenDoc = await token.findOneAndUpdate(
+    const refreshTokenDoc = await refreshTokenModel.findOneAndUpdate(
       { user: existingUser._id },
       { token: refreshToken },
       { new: true, upsert: true },
@@ -72,10 +72,27 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     const refreshToken = req.body.token;
-    await token.deleteOne({ token: refreshToken });
+    await refreshTokenModel.deleteOne({ token: refreshToken });
     res.sendStatus(204);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+const token = async (req, res) => {
+  try {
+    const refreshToken = req.body.token;
+    const existingRefreshToken = await refreshTokenModel.findOne({
+      token: refreshToken,
+    });
+
+    if (!existingRefreshToken) {
+      return res.status(404).json({ error: 'RefreshToken does not exists' });
+    }
+
+    verifyRefreshToken(res, refreshToken);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -83,4 +100,5 @@ module.exports = {
   register,
   login,
   logout,
+  token,
 };
