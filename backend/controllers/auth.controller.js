@@ -1,5 +1,5 @@
 const user = require('../models/user.model');
-const refreshTokenModel = require('../models/refreshToken.model');
+const token = require('../models/refreshToken.model');
 const audit = require('../models/auditLogins.model');
 const {
   authToken,
@@ -56,7 +56,7 @@ const login = async (req, res) => {
     const accessToken = generateAccessToken(userObj);
     const refreshToken = generateRefreshToken(userObj);
 
-    const refreshTokenDoc = await refreshTokenModel.findOneAndUpdate(
+    const refreshTokenDoc = await token.findOneAndUpdate(
       { user: existingUser._id },
       { token: refreshToken },
       { new: true, upsert: true },
@@ -72,17 +72,17 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     const refreshToken = req.body.token;
-    await refreshTokenModel.deleteOne({ token: refreshToken });
+    await token.deleteOne({ token: refreshToken });
     res.sendStatus(204);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const token = async (req, res) => {
+const getToken = async (req, res) => {
   try {
     const refreshToken = req.body.token;
-    const existingRefreshToken = await refreshTokenModel.findOne({
+    const existingRefreshToken = await token.findOne({
       token: refreshToken,
     });
 
@@ -100,5 +100,5 @@ module.exports = {
   register,
   login,
   logout,
-  token,
+  getToken,
 };

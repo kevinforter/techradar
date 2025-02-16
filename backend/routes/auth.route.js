@@ -5,12 +5,12 @@ const {
   register,
   login,
   logout,
-  token,
+  getToken,
 } = require('../controllers/auth.controller');
 
 router.post('/register', register);
 router.post('/login', login);
 router.delete('/logout', logout);
-router.get('/token', token);
+router.get('/token', getToken);
 
 module.exports = router;
