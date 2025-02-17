@@ -8,7 +8,13 @@ const techSchema = mongoose.Schema(
     },
     ring: {
       type: String,
-      required: [true, 'Ring of tech is required'],
+      required: [
+        function () {
+          // Require ring only if status is not 'draft'
+          return this.status !== 'draft';
+        },
+        'Ring is required when publishing tech',
+      ],
     },
     category: {
       type: String,
@@ -20,13 +26,20 @@ const techSchema = mongoose.Schema(
     },
     classificationDescription: {
       type: String,
-      required: [true, 'Classification description is required'],
+      required: [
+        function () {
+          // Require ring only if status is not 'draft'
+          return this.status !== 'draft';
+        },
+        'Classification description is required when publishing tech',
+      ],
     },
     publicationDate: {
       type: Date,
     },
     status: {
       type: String,
+      enum: ['draft', 'published'],
       default: 'draft',
     },
   },

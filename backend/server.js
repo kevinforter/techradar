@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Connect to MongoDB
-db.connect(app, `${process.env.PORT}`);
+db.connect(app, process.env.PORT);
 
 // Status route
 app.use('/api/v1/status', statusRoute);
