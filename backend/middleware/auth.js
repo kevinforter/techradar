@@ -13,8 +13,14 @@ const authToken = (req, res, next) => {
   });
 };
 
-const authRole = (roles) => {
-  const allowedRoles = roles.split('||').map((role) => role.trim());
+const authRole = () => {
+  if (!process.env.AUTH_ROLE) {
+    throw new Error('AUTH_ROLE is not defined in the environment variables.');
+  }
+
+  const allowedRoles = process.env.AUTH_ROLE.split('||').map((role) =>
+    role.trim(),
+  );
 
   return (req, res, next) => {
     if (!req.user || !req.user.role) {
