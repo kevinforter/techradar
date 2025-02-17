@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "compose:up": "docker-compose up -d",
     "dev": "nodemon server.js",
     "dev-docker": "concurrently \"npm run compose:up\" nodemon server.js"
   },
