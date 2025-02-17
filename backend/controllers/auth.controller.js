@@ -47,7 +47,10 @@ const login = async (req, res) => {
       role: existingUser.role,
     };
 
-    if (existingUser.role === 'CTO' || existingUser.role === 'Tech-Lead') {
+    const auditRoles = process.env.AUTH_ROLE.split('||').map((role) =>
+      role.trim(),
+    );
+    if (auditRoles.includes(existingUser.role)) {
       await audit.create({ user: existingUser._id });
     }
 
