@@ -2,8 +2,6 @@ const user = require('../models/user.model');
 const token = require('../models/refreshToken.model');
 const audit = require('../models/auditLogins.model');
 const {
-  authToken,
-  authRole,
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
