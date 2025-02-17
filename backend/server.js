@@ -5,6 +5,7 @@ require('dotenv').config();
 const db = require('./config/database');
 const statusRoute = require('./routes/status.route');
 const authRoute = require('./routes/auth.route');
+const techRoute = require('./routes/tech.route');
 
 // Middleware to parse JSON bodies from incoming requests
 app.use(express.json());
@@ -18,3 +19,6 @@ app.use('/api/v1/status', statusRoute);
 
 // Auth route
 app.use('/api/v1', authRoute);
+
+// Tech route
+app.use('/api/v1/tech', techRoute);
