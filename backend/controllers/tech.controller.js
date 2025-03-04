@@ -122,9 +122,9 @@ const updateTech = async (req, res) => {
 
 const deleteTech = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { _id } = req.params;
 
-    const deleteTech = await tech.findByIdAndDelete({ id });
+    const deleteTech = await tech.findByIdAndDelete({ _id });
 
     if (!deleteTech) {
       return res.status(404).json({ error: 'tech not found' });
