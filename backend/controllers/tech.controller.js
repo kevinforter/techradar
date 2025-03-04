@@ -159,20 +159,30 @@ const deleteMultipleTech = async (req, res) => {
 
 const publishTech = async (req, res) => {
   try {
+    const { _id } = req.params;
     const { name, ring, classificationDescription } = req.body;
-    const techToUpdate = await tech.findOne({ name });
 
-    techToUpdate.status = 'published';
-    if (ring !== undefined) techToUpdate.ring = ring;
-    if (classificationDescription !== undefined)
-      techToUpdate.classificationDescription = classificationDescription;
-    // other updates if needed
-    techToUpdate.publicationDate = Date.now();
-    await techToUpdate.save();
-    res.status(200).json({
-      message: 'Technology published successfully',
-      tech: techToUpdate,
-    });
+    if (
+      name == null ||
+      name === '' ||
+      ring == null ||
+      ring === '' ||
+      classificationDescription == null ||
+      classificationDescription === ''
+    ) {
+      return res.status(400).json({ error: 'Missing or empty values' });
+    }
+
+    const updatedTech = await tech.findByIdAndUpdate(
+      _id,
+      {
+        $set: req.body,
+        status: 'published',
+        publicationDate: Date.now(),
+      },
+      { new: true },
+    );
+    return res.status(200).json(updatedTech);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
