@@ -32,9 +32,9 @@ const getAllTech = async (req, res) => {
 
 const getTech = async (req, res) => {
   try {
-    const { name } = req.params;
+    const { _id } = req.params;
 
-    const techRes = await tech.find({ name });
+    const techRes = await tech.find({ _id });
     res.status(200).json(techRes);
   } catch (error) {
     res.status(500).json({ message: error.message });
