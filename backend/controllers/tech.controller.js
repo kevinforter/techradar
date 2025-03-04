@@ -86,18 +86,13 @@ const addTech = async (req, res) => {
 
 const updateTech = async (req, res) => {
   try {
+    const { _id } = req.params;
+
     const { name, ring, category, techDescription, classificationDescription } =
       req.body;
 
-    const techIdentifier = req.params.id || name;
-
-    if (!techIdentifier) {
-      return res.status(400).json({ error: 'No Identifier found' });
-    }
-
     // Find the tech by its name or id
-    const query = req.params.id ? { _id: req.params.id } : { name };
-    const existingTech = await tech.findOne(query);
+    const existingTech = await tech.findById(_id);
     if (!existingTech) {
       return res.status(404).json({ error: 'Tech not found' });
     }
@@ -113,8 +108,8 @@ const updateTech = async (req, res) => {
       updateData.classificationDescription = classificationDescription;
 
     // Update the document and return the updated document
-    const updatedTech = await tech.findOneAndUpdate(
-      query,
+    const updatedTech = await tech.findByIdAndUpdate(
+      _id,
       { $set: updateData },
       { new: true },
     );
