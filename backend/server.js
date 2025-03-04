@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 require('dotenv').config();
 
@@ -6,6 +7,9 @@ const db = require('./config/database');
 const statusRoute = require('./routes/status.route');
 const authRoute = require('./routes/auth.route');
 const techRoute = require('./routes/tech.route');
+
+// Enable CORS for all routes
+app.use(cors());
 
 // Middleware to parse JSON bodies from incoming requests
 app.use(express.json());
