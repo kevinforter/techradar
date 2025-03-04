@@ -13,8 +13,11 @@ const {
 const { authToken, authRole } = require('../middleware/auth');
 require('dotenv').config();
 
-// Root routes
-router.get('/', authToken, (req, res, next) => {
+// Middleware
+router.use(authToken);
+
+// Root w/o authRole
+router.get('/', (req, res, next) => {
   const allowedRoles = process.env.AUTH_ROLE.split('||').map((role) =>
     role.trim(),
   );
@@ -23,16 +26,25 @@ router.get('/', authToken, (req, res, next) => {
   }
   return getAllTech(req, res, next);
 });
-router.post('/', authToken, authRole(), addTech);
-router.put('/', authToken, authRole(), updateTech);
-router.delete('/', authToken, authRole(), deleteMultipleTech);
+
+// Publishing route w/o authRole
+router.get('/published', getPublishedTech);
+
+// dynamic routes w/o authRole
+router.get('/:_id', getTech);
+
+// Middelware
+router.use(authRole());
+
+// Root routes
+router.post('/', addTech);
+router.put('/:_id', updateTech);
+router.delete('/', deleteMultipleTech);
 
 // Publishing routes
-router.get('/published', authToken, getPublishedTech);
-router.put('/publish', authToken, authRole(), publishTech);
+router.put('/publish/:_id', publishTech);
 
 // dynamic routes
-router.get('/:name', authToken, getTech);
-router.delete('/:id', authToken, authRole(), deleteTech);
+router.delete('/:_id', deleteTech);
 
 module.exports = router;
