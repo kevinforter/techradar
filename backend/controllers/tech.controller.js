@@ -3,7 +3,28 @@ const tech = require('../models/tech.model');
 const getAllTech = async (req, res) => {
   try {
     const techRes = await tech.find({});
-    res.status(200).json(techRes);
+
+    // Group technologies by category, then by maturity (ring)
+    const groupedTech = techRes.reduce((acc, techItem) => {
+      // Get category and maturity values; adjust field names as needed.
+      const category = techItem.category;
+      const maturity = techItem.ring;
+
+      // Create category group if it doesn't exist
+      if (!acc[category]) {
+        acc[category] = {};
+      }
+      // Create maturity group within category if it doesn't exist
+      if (!acc[category][maturity]) {
+        acc[category][maturity] = [];
+      }
+      // Add current tech item to the appropriate group
+      acc[category][maturity].push(techItem);
+
+      return acc;
+    }, {});
+
+    res.status(200).json(groupedTech);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
