@@ -1,0 +1,100 @@
+<div *ngIf="techForm">
+  <h2>{{ techForm.get('name')?.value | uppercase }} Details</h2>
+  <form [formGroup]="techForm" (ngSubmit)="publishTech()">
+    <!-- Tech name -->
+    <label for="name">Tech name:</label>
+    <ng-container *ngIf="editMode; else viewName">
+      <input
+        id="name"
+        formControlName="name"
+        [placeholder]="originalTech?.name || 'name'"
+      />
+    </ng-container>
+    <ng-template #viewName>
+      <span>{{ techForm.get('name')?.value }}</span>
+    </ng-template>
+    <br />
+
+    <!-- Tech ring -->
+    <label for="ring">Tech ring:</label>
+    <ng-container *ngIf="editMode; else viewRing">
+      <input
+        id="ring"
+        formControlName="ring"
+        [placeholder]="originalTech?.ring || 'ring'"
+      />
+    </ng-container>
+    <ng-template #viewRing>
+      <span>{{ techForm.get('ring')?.value }}</span>
+    </ng-template>
+    <br />
+
+    <!-- Tech category -->
+    <label for="category">Tech category:</label>
+    <ng-container *ngIf="editMode; else viewCategory">
+      <input
+        id="category"
+        formControlName="category"
+        [placeholder]="originalTech?.category || 'category'"
+      />
+    </ng-container>
+    <ng-template #viewCategory>
+      <span>{{ techForm.get('category')?.value }}</span>
+    </ng-template>
+    <br />
+
+    <!-- Tech Description -->
+    <label for="techDescription">Tech Description:</label>
+    <ng-container *ngIf="editMode; else viewTechDescription">
+      <input
+        id="techDescription"
+        formControlName="techDescription"
+        [placeholder]="originalTech?.techDescription || 'techDescription'"
+      />
+    </ng-container>
+    <ng-template #viewTechDescription>
+      <span>{{ techForm.get('techDescription')?.value }}</span>
+    </ng-template>
+    <br />
+
+    <!-- Classification Description -->
+    <label for="classificationDescription">Classification Description:</label>
+    <ng-container *ngIf="editMode; else viewClassificationDescription">
+      <input
+        id="classificationDescription"
+        formControlName="classificationDescription"
+        [placeholder]="
+          originalTech?.classificationDescription || 'classificationDescription'
+        "
+      />
+    </ng-container>
+    <ng-template #viewClassificationDescription>
+      <span>{{ techForm.get('classificationDescription')?.value }}</span>
+    </ng-template>
+    <br />
+
+    <!-- Publish button (enabled only if every required field has a value) -->
+    <button *ngIf="isAuthorized" type="submit" [disabled]="!canPublish">
+      Publish
+    </button>
+    <!-- Update button is visible only in edit mode -->
+    <button
+      *ngIf="isAuthorized && editMode"
+      type="button"
+      (click)="updateTech()"
+    >
+      Update Tech
+    </button>
+    <button *ngIf="isAuthorized" type="button" (click)="deleteTech()">
+      Delete
+    </button>
+    <button *ngIf="isAuthorized" type="button" (click)="toggleEdit()">
+      {{ editMode ? 'Cancel Edit' : 'Edit' }}
+    </button>
+  </form>
+</div>
+
+<!-- Render these buttons only if authorized -->
+<div *ngIf="isAuthorized"></div>
+
+<button type="button" (click)="goBack()">Go Back</button>
