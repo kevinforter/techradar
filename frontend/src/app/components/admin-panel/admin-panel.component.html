@@ -1,0 +1,55 @@
+<div *ngIf="isAuthorized; else notAuthorized">
+  <h2>Admin Panel</h2>
+  <h3>Add New Tech</h3>
+  <form [formGroup]="addTechForm" (ngSubmit)="onAddTech()">
+    <div>
+      <label for="name">Name:</label>
+      <input id="name" formControlName="name" />
+    </div>
+    <div>
+      <label for="ring">Ring:</label>
+      <select id="ring" formControlName="ring">
+        <option value="adopt">Adopt</option>
+        <option value="trial">Trial</option>
+        <option value="assess">Assess</option>
+      </select>
+    </div>
+    <div>
+      <label for="category">Category:</label>
+      <select id="category" formControlName="category">
+        <option value="platform">Platform</option>
+        <option value="tools">Tools</option>
+        <option value="languages & frameworks">Languages & Frameworks</option>
+        <option value="techniques">Techniques</option>
+      </select>
+    </div>
+    <div>
+      <label for="techDescription">Tech Description:</label>
+      <textarea
+        id="techDescription"
+        formControlName="techDescription"
+      ></textarea>
+    </div>
+    <div>
+      <label for="classificationDescription">Classification Description:</label>
+      <textarea
+        id="classificationDescription"
+        formControlName="classificationDescription"
+      ></textarea>
+    </div>
+    <div>
+      <label for="status">Status:</label>
+      <select id="status" formControlName="status">
+        <option value="draft">Draft</option>
+        <option value="published">Published</option>
+      </select>
+    </div>
+    <button type="submit" [disabled]="addTechForm.invalid">Add Tech</button>
+  </form>
+  <button type="button" (click)="goBack()">go back</button>
+
+  <app-all-tech [isAdminPanel]="true"></app-all-tech>
+</div>
+<ng-template #notAuthorized>
+  <p>You are not authorized to view this panel.</p>
+</ng-template>
