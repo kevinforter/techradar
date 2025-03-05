@@ -34,7 +34,7 @@ const getTech = async (req, res) => {
   try {
     const { _id } = req.params;
 
-    const techRes = await tech.find({ _id });
+    const techRes = await tech.findById({ _id });
     res.status(200).json(techRes);
   } catch (error) {
     res.status(500).json({ message: error.message });
