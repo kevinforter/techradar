@@ -632,14 +632,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_3_1_business_context">3.1 Business Context</h3>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>flowchart TD
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">flowchart TD
     A[Unternehmen] --&gt; B[CTO / Teach Lead]
     B --&gt; D[Technologie-Radar-Administration]
     D --&gt; E[TechRadar Anwendung]
     E --&gt; F[Technologie-Radar-Viewer]
-    F --&gt; G[Mitarbeiter]</pre>
+    F --&gt; G[Mitarbeiter]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -694,9 +694,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="sect2">
 <h3 id="_3_2_deployment_context">3.2 Deployment Context</h3>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>graph LR
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph LR
     A[Client Browser] --&gt;|"HTTP(S)"| B[Angular SPA]
     B --&gt;|"API Calls"| C[Node.js/Express API]
     C --&gt;|"DB Queries"| D[MongoDB]
@@ -704,7 +704,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
       C
       D
     end
-    E[Nginx Webserver] --&gt; B</pre>
+    E[Nginx Webserver] --&gt; B</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -858,10 +858,10 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph LR
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph LR
     A[MongoDB-Datenbank]
     B[Mongoose ORM]
-    A &lt;---&gt; B</pre>
+    A &lt;---&gt; B</code></pre>
 </div>
 </div>
 </div>
@@ -882,14 +882,14 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph LR
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph LR
     A[User Request]
     B[Auth Controller]
     C[JWT Generator]
     D[Audit Log]
     A --&gt; B
     B --&gt; C
-    B --&gt; D</pre>
+    B --&gt; D</code></pre>
 </div>
 </div>
 </div>
@@ -923,12 +923,12 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph TD
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph TD
     A[Tech Model]
     B[Tech Controller]
     C[RESTful API]
     A --&gt; B
-    B --&gt; C</pre>
+    B --&gt; C</code></pre>
 </div>
 </div>
 </div>
@@ -949,9 +949,9 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph LR
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph LR
     A[Status Controller] --&gt; B[MongoDB Connection]
-    A --&gt; C[Server Status]</pre>
+    A --&gt; C[Server Status]</code></pre>
 </div>
 </div>
 </div>
@@ -978,14 +978,14 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph LR
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph LR
     A[Login Component]
     B[Register Component]
     C[Auth Service]
     D[HTTP Interceptor]
     A --&gt; C
     B --&gt; C
-    C --&gt; D</pre>
+    C --&gt; D</code></pre>
 </div>
 </div>
 </div>
@@ -1006,12 +1006,12 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph TD
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph TD
     A[Admin Panel]
     B[All Tech Component]
     C[Tech Detail Component]
     A --&gt; B
-    B --&gt; C</pre>
+    B --&gt; C</code></pre>
 </div>
 </div>
 </div>
@@ -1028,7 +1028,7 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>classDiagram
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">classDiagram
     class User {
       +String username
       +String password
@@ -1052,7 +1052,7 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
     }
 
     User &lt;|-- RefreshToken : owns
-    User &lt;|-- AuditLogins : audited</pre>
+    User &lt;|-- AuditLogins : audited</code></pre>
 </div>
 </div>
 </div>
@@ -1063,7 +1063,7 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>classDiagram
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">classDiagram
     class Tech {
       +String name
       +String category
@@ -1074,7 +1074,7 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
       +String status
       +Date createdAt
       +Date updatedAt
-    }</pre>
+    }</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1150,7 +1150,7 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>sequenceDiagram
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
     participant U as User
     participant SPA as Angular SPA
     participant AG as AuthGuard
@@ -1167,7 +1167,7 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
     DB--&gt;&gt;API: Rückgabe der Daten
     API--&gt;&gt;HI: Sende Antwort (z. B. Authentifizierungsergebnis, Tech-Daten)
     HI--&gt;&gt;SPA: Leite Antwort an SPA weiter
-    SPA--&gt;&gt;U: Darstellung der Ergebnisse (z. B. Dashboard, Fehlermeldung)</pre>
+    SPA--&gt;&gt;U: Darstellung der Ergebnisse (z. B. Dashboard, Fehlermeldung)</code></pre>
 </div>
 </div>
 </div>
@@ -1178,7 +1178,7 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
-<pre>graph LR
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph LR
     %% Frontend-Bereich
     subgraph "Frontend"
       A["Angular SPA"]
@@ -1206,7 +1206,7 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
     C --&gt; E
     C --&gt; F
     C --&gt; G
-    G --&gt; H</pre>
+    G --&gt; H</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1295,14 +1295,14 @@ Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Fron
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph TD
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph TD
     A[Benutzeranfrage] --&gt; B[Authentifizierungsmodul]
     B --&gt; C["JWT Token Generator"]
     B --&gt; D["bcrypt (Passwort-Verschlüsselung)"]
     B --&gt; E["Audit Logging"]
     C --&gt; F[Gesicherter Zugriff]
     D --&gt; F
-    E --&gt; G["Audit-Datenbank"]</pre>
+    E --&gt; G["Audit-Datenbank"]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1327,13 +1327,13 @@ Dieses Diagramm zeigt, wie die Sicherheitskomponenten zusammenwirken. Die Authen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph LR
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph LR
     A[Client Requests] --&gt; B[API-Server Cluster]
     B --&gt; C[Load Balancer]
     C --&gt; D[Containerisierte Services]
     D --&gt; E[Cloud Infrastruktur]
     E --&gt; F[Horizontale Skalierung]
-    D --&gt; G[Replikation &amp; Backup]</pre>
+    D --&gt; G[Replikation &amp; Backup]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1358,12 +1358,12 @@ Das Diagramm veranschaulicht, wie Containerisierung und Cloud-basierte Skalierun
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph TD
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph TD
     A[Modulare Architektur] --&gt; B[Separate Module]
     A --&gt; C[Standardisierte Schnittstellen]
     B --&gt; D[Wartbarkeit]
     C --&gt; D
-    D --&gt; E[Erweiterbarkeit]</pre>
+    D --&gt; E[Erweiterbarkeit]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1388,12 +1388,12 @@ Dieses Diagramm hebt hervor, wie modulare Strukturen und standardisierte Schnitt
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph LR
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph LR
     A[Fehler im System] --&gt; B["Global Exception Handler"]
     A --&gt; C["Error Interceptor (Frontend)"]
     B --&gt; D["Zentrales Logging"]
     C --&gt; D
-    D --&gt; E["Monitoring &amp; Alerts"]</pre>
+    D --&gt; E["Monitoring &amp; Alerts"]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1425,14 +1425,14 @@ Das Diagramm zeigt den Fluss von Fehlern: Sowohl im Backend als auch im Frontend
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph LR
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph LR
     A[Benutzereingabe] --&gt; B[Client-seitige Validierung]
     B --&gt; C[Angular Form Validierung]
     A --&gt; D[Server-seitige Validierung]
     D --&gt; E[Middleware in Express]
     C --&gt; F[Erstvalidierte Daten]
     E --&gt; F
-    F --&gt; G[Persistenz in Datenbank]</pre>
+    F --&gt; G[Persistenz in Datenbank]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1457,14 +1457,14 @@ Dieses Diagramm zeigt den Validierungsprozess, bei dem Benutzereingaben zunächs
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph TD
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph TD
     A["Authentifizierungsmodul"] --- B["Tech-Management Modul"]
     A --- C["Audit Logging"]
     B --- D["Datenbankzugriff (Mongoose)"]
     C --- D["Datenbankzugriff (Mongoose)"]
     A --- E["Common Services"]
     B --- E["Common Services"]
-    C --- E["Common Services"]</pre>
+    C --- E["Common Services"]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1530,12 +1530,12 @@ Das Diagramm veranschaulicht, wie die verschiedenen Module der Anwendung lose ge
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph TD
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph TD
     A[Node.js/Express API] --&gt; B[Authentifizierungsmodul]
     A --&gt; C[Tech-Management Modul]
     A --&gt; D[Audit Logging]
     A --&gt; E[Mongoose ORM]
-    E --&gt; F[MongoDB]</pre>
+    E --&gt; F[MongoDB]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1593,13 +1593,13 @@ Das Diagramm zeigt, wie die Backend-Komponenten zusammenwirken. Die API kommuniz
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>graph LR
+<pre class="highlight"><code class="language-mermaid" data-lang="mermaid">graph LR
     A[Client Browser] --&gt; B[Angular SPA]
     B --&gt; C[HTTP Interceptor]
     B --&gt; D[Auth Guard]
     D --&gt; E[Geschützte Routen]
     B --&gt; F[UI-Komponenten]
-    F --&gt; G[Tech-Management UI]</pre>
+    F --&gt; G[Tech-Management UI]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1876,7 +1876,7 @@ Die lose Kopplung der einzelnen Komponenten des MEAN Stacks erlaubt es, einzelne
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-05 17:22:26 +0100
+Last updated 2025-03-05 17:49:09 +0100
 </div>
 </div>
 </body>

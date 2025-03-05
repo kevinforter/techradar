@@ -70,7 +70,7 @@ Die Architektur der Anwendung wurde unter Berücksichtigung folgender Randbeding
 == 3. Systemkontext und Abgrenzung
 
 === 3.1 Business Context
-[mermaid]
+[source, mermaid]
 ....
 flowchart TD
     A[Unternehmen] --> B[CTO / Teach Lead]
@@ -95,7 +95,7 @@ Die TechRadar Anwendung richtet sich an Unternehmen, Produktteams sowie Software
 Der Technologie-Radar ermöglicht es somit, auf Basis von festgelegten Kriterien (wie z. B. den vier Quadranten und den Reife-Ringen) fundierte Geschäftsentscheidungen zu treffen und die Innovationskraft des Unternehmens gezielt zu steuern.
 
 === 3.2 Deployment Context
-[mermaid]
+[source, mermaid]
 ....
 graph LR
     A[Client Browser] -->|"HTTP(S)"| B[Angular SPA]
@@ -160,7 +160,7 @@ In diesem Kapitel wird die interne Struktur der Anwendung detailliert beschriebe
 * Initialisiert die Datenbank, inklusive automatischer Benutzererstellung.
 * Nutzt Mongoose als ORM zur Datenmodellierung.
 
-[mermaid]
+[source, mermaid]
 ----
 graph LR
     A[MongoDB-Datenbank]
@@ -173,7 +173,7 @@ graph LR
 * Implementiert die Erzeugung und Überprüfung von JWTs.
 * Protokolliert Anmeldeversuche in einem Audit-Log, wenn ein Benutzer mit administrativen Rechten (CTO/Tech Lead) sich anmeldet.
 
-[mermaid]
+[source, mermaid]
 ----
 graph LR
     A[User Request]
@@ -193,7 +193,7 @@ graph LR
 - RESTful APIs als "View" fungieren.
 * Unterstützt Funktionen zum Erfassen, Ändern und Publizieren von Technologien.
 
-[mermaid]
+[source, mermaid]
 ----
 graph TD
     A[Tech Model]
@@ -208,7 +208,7 @@ graph TD
 * Meldet den Serverstatus.
 * Ermöglicht eine schnelle Diagnose von Verbindungsproblemen.
 
-[mermaid]
+[source, mermaid]
 ----
 graph LR
     A[Status Controller] --> B[MongoDB Connection]
@@ -223,7 +223,7 @@ graph LR
 * Implementiert einen HTTP-Interceptor, der JWTs automatisch an API-Anfragen anhängt.
 * Setzt Route Guards ein, um den Zugriff auf geschützte Bereiche zu sichern.
 
-[mermaid]
+[source, mermaid]
 ----
 graph LR
     A[Login Component]
@@ -240,7 +240,7 @@ graph LR
 * Enthält eine Übersichtskomponente („All Tech Component“) und detaillierte Ansichten („Tech Detail Component“) für einzelne Technologie-Einträge.
 * Unterstützt dynamische Formularvalidierung und Echtzeit-Aktualisierungen der Datenanzeige.
 
-[mermaid]
+[source, mermaid]
 ----
 graph TD
     A[Admin Panel]
@@ -258,7 +258,7 @@ Um die Datenmodelle und ihre Beziehungen innerhalb der TechRadar Anwendung besse
 
 Dieses Diagramm zeigt die zentralen Klassen für die Benutzerauthentifizierung, inklusive des User-Modells, der RefreshToken-Entität und des Audit-Logs, das administrative Logins protokolliert.
 
-[mermaid]
+[source, mermaid]
 ----
 classDiagram
     class User {
@@ -291,7 +291,7 @@ classDiagram
 
 Dieses Diagramm veranschaulicht das Tech-Modell, welches die Grundlage für die Verwaltung und Publikation von Technologien bildet. Es zeigt alle relevanten Attribute, die für die Erfassung, Änderung und Publikation benötigt werden.
 
-[mermaid]
+[source, mermaid]
 ----
 classDiagram
     class Tech {
@@ -332,7 +332,7 @@ Im laufenden Betrieb werden folgende Abläufe realisiert:
 
 Im folgenden Sequenzdiagramm wird der typische Ablauf einer Benutzeranfrage (z. B. beim Login oder Abruf von Tech-Daten) dargestellt. Dabei zeigt das Diagramm, wie der Request vom Client über die Angular SPA und den HTTP-Interceptor an die Node.js/Express API weitergeleitet wird. Die API kommuniziert anschließend mit der MongoDB, um die benötigten Daten zu verarbeiten und das Ergebnis zurückzugeben.
 
-[mermaid]
+[source, mermaid]
 ----
 sequenceDiagram
     participant U as User
@@ -357,7 +357,7 @@ sequenceDiagram
 == 7. Einsatzsicht (Deployment View)
 
 
-[mermaid]
+[source, mermaid]
 ----
 graph LR
     %% Frontend-Bereich
@@ -418,7 +418,7 @@ Die folgenden Konzepte durchziehen die gesamte TechRadar Anwendung und gewährle
 * Verschlüsselung sensibler Daten, insbesondere Passwörter, mittels bcrypt.
 * Zusätzliche Sicherheitsmaßnahmen wie Audit-Logging bei administrativen Anmeldungen.
 
-[mermaid]
+[source, mermaid]
 ----
 graph TD
     A[Benutzeranfrage] --> B[Authentifizierungsmodul]
@@ -439,7 +439,7 @@ Dieses Diagramm zeigt, wie die Sicherheitskomponenten zusammenwirken. Die Authen
 * Einsatz von Containerisierung (z. B. Docker) und Cloud-Infrastrukturen zur Unterstützung von Lastspitzen.
 * Horizontale Skalierung der API-Server und Datenbank-Replikation für hohe Verfügbarkeit.
 
-[mermaid]
+[source, mermaid]
 ----
 graph LR
     A[Client Requests] --> B[API-Server Cluster]
@@ -459,7 +459,7 @@ Das Diagramm veranschaulicht, wie Containerisierung und Cloud-basierte Skalierun
 * Einsatz moderner Frameworks (Angular, Express) zur Förderung einer strukturierten, modularen Entwicklung.
 * Umfangreiche Dokumentation und standardisierte Schnittstellen (RESTful APIs) erleichtern zukünftige Erweiterungen.
 
-[mermaid]
+[source, mermaid]
 ----
 graph TD
     A[Modulare Architektur] --> B[Separate Module]
@@ -478,7 +478,7 @@ Dieses Diagramm hebt hervor, wie modulare Strukturen und standardisierte Schnitt
 * Zentralisiertes Logging zur schnellen Diagnose und Behebung von Problemen.
 * Implementierung von globalen Exception-Handlern im Backend und Error-Interceptors im Frontend.
 
-[mermaid]
+[source, mermaid]
 ----
 graph LR
     A[Fehler im System] --> B["Global Exception Handler"]
@@ -498,7 +498,7 @@ Das Diagramm zeigt den Fluss von Fehlern: Sowohl im Backend als auch im Frontend
 - Server-seitige Validierung im Backend, um nur korrekte und vollständige Daten zu verarbeiten.
 * Einsatz von Framework-Mechanismen und Middleware, um Validierungsregeln zentral zu definieren.
 
-[mermaid]
+[source, mermaid]
 ----
 graph LR
     A[Benutzereingabe] --> B[Client-seitige Validierung]
@@ -519,7 +519,7 @@ Dieses Diagramm zeigt den Validierungsprozess, bei dem Benutzereingaben zunächs
 * Jedes Modul (z. B. Authentifizierung, Tech-Management, Audit Logging) ist in sich geschlossen und minimiert externe Abhängigkeiten.
 * Diese lose Kopplung erleichtert das Testen, die Wartung und das spätere Erweitern der einzelnen Module.
 
-[mermaid]
+[source, mermaid]
 ----
 graph TD
     A["Authentifizierungsmodul"] --- B["Tech-Management Modul"]
@@ -554,7 +554,7 @@ Dieses Kapitel erläutert die zentralen Architekturentscheidungen, getrennt nach
 
 *Diagramm (Backend Architektur):*
 
-[mermaid]
+[source, mermaid]
 ----
 graph TD
     A[Node.js/Express API] --> B[Authentifizierungsmodul]
@@ -583,7 +583,7 @@ Das Diagramm zeigt, wie die Backend-Komponenten zusammenwirken. Die API kommuniz
 
 *Diagramm (Frontend Architektur):*
 
-[mermaid]
+[source, mermaid]
 ----
 graph LR
     A[Client Browser] --> B[Angular SPA]
