@@ -1,0 +1,684 @@
+= Architekturdokumentation der TechRadar Anwendung
+:author: Kevin Forter
+:date: 2025-03-12
+
+Dieses Dokument basiert auf der arc42-Struktur (Kapitel 1 bis 12) und fasst die wesentlichen Architekturentscheidungen, Komponenten und Qualitätsmerkmale der TechRadar Anwendung zusammen. Die Umsetzung erfolgte modern, unterteilt in ein Backend (Node.js, Express, Mongoose/MongoDB) und ein Frontend (Angular).
+
+== 1. Einleitung und Ziele
+
+Die TechRadar Anwendung dient als Plattform zur Verwaltung und Präsentation von Technologien. Ziel ist es, Unternehmen und Entscheidungsträgern einen klaren Überblick über den aktuellen Stand der Technologieentwicklung zu bieten. Wichtige Ziele sind:
+
+* Bereitstellung einer intuitiven Benutzeroberfläche für Tech-Management
+* Gewährleistung einer sicheren und skalierbaren Backend-Infrastruktur
+* Integration moderner Authentifizierungs- und Autorisierungstechniken
+
+=== 1.1 Technologie-Radar
+
+Der Technologie-Radar ist ein bewährtes Werkzeug für das Technologie-Management in Unternehmen, für Produktteams oder für Software Architekten und Software Engineers. Bekannte Umsetzungen, wie der [Technology Radar](https://www.thoughtworks.com/de-de/radar) von ThoughtWorks, dienen als Inspiration. Dabei werden Technologien in vier Quadranten eingeteilt:
+
+* *Techniques*
+* *Tools*
+* *Platforms*
+* *Languages & Frameworks*
+
+Die Reife bzw. Maturität der Technologien wird in sogenannten Ringen klassifiziert:
+
+* *Assess*
+* *Trial*
+* *Adopt*
+* *Hold*
+
+Der Technologie-Radar wird als Software as a Service angeboten und besteht aus:
+
+* **Technologie-Radar-Administration:**
+- Verwaltung der Technologien durch CTOs oder Tech-Leads.
+* **Technologie-Radar-Viewer:**
+- Darstellung der publizierten Technologien für alle Mitarbeiter.
+
+Optional (nicht Teil der Aufgabenstellung):
+
+* **System-Administration:**
+- Verwaltung von Unternehmen bzw. Mandanten und Einladung von Benutzern.
+
+=== 1.2 Fachliche Anforderungen (Auszug)
+
+Die Umsetzung der folgenden Anforderungen stellt einen wesentlichen Teil der Projektziele dar:
+
+* **User Story 1:** Anmeldung an der Technologie-Radar-Administration (nur für CTO oder Tech-Lead)
+* **User Story 2:** Erfassen einer neuen Technologie mit Pflichtfeldern wie Name, Kategorie, Ring, Technologie-Beschreibung und Einordnungsbeschreibung sowie Erfassungsdatum.
+* **User Story 3:** Publikation erfasster Technologien mit Nachtragspflichten (Ring, Einordnungsbeschreibung, Publikationsdatum).
+* **User Story 4 & 5:** Änderung von Technologien und deren Einordnung, wobei Änderungsdaten automatisch hinterlegt werden.
+* **User Story 6:** Anzeige der publizierten Technologien im Viewer, strukturiert nach Kategorien und Maturität.
+* **User Story 7:** Anmeldung am Technologie-Radar-Viewer.
+
+Zusätzlich gelten folgende Qualitätsanforderungen:
+
+* Optimierung des Viewers für mobile Endgeräte.
+* Ladezeiten von unter 1 Sekunde.
+* Protokollierung sämtlicher Anmeldungen an die Technologie-Radar-Administration.
+
+== 2. Randbedingungen
+
+Die Architektur der Anwendung wurde unter Berücksichtigung folgender Randbedingungen entwickelt:
+
+* Nutzung von Node.js und Express für eine asynchrone, event gesteuerte API.
+* Einsatz von MongoDB als flexible NoSQL-Datenbank.
+* Frontend-Entwicklung mit Angular als Single-Page-Application (SPA).
+* Sicherheitsanforderungen, wie der Einsatz von JWT und bcrypt.
+* Notwendigkeit einer klaren Trennung von Geschäftslogik, Datenzugriff und Präsentation.
+
+== 3. Systemkontext und Abgrenzung
+
+=== 3.1 Business Context
+[mermaid]
+....
+flowchart TD
+    A[Unternehmen] --> B[CTO / Teach Lead]
+    B --> D[Technologie-Radar-Administration]
+    D --> E[TechRadar Anwendung]
+    E --> F[Technologie-Radar-Viewer]
+    F --> G[Mitarbeiter]
+....
+
+Die TechRadar Anwendung richtet sich an Unternehmen, Produktteams sowie Softwarearchitekten und -engineers, die einen strategischen Überblick über den Einsatz moderner Technologien gewinnen möchten. Im Business Context dient der Technologie-Radar als Entscheidungsunterstützung, um folgende Ziele zu erreichen:
+
+* **Technologie-Management:**
+- Identifikation und Kategorisierung aktueller Technologien und Trends.
+- Bewertung der Reife und des Potenzials von Technologien zur strategischen Planung.
+* **Entscheidungsfindung:**
+- Unterstützung von CTOs und Tech-Leads bei der Auswahl und Priorisierung von Technologien.
+- Grundlage für Investitionsentscheidungen und Innovationsstrategien.
+* **Transparenz:**
+- Ermöglichung eines gemeinsamen Verständnisses über technologische Entwicklungen innerhalb eines Unternehmens.
+- Förderung der internen Kommunikation durch einen zentralen, leicht zugänglichen Viewer.
+
+Der Technologie-Radar ermöglicht es somit, auf Basis von festgelegten Kriterien (wie z. B. den vier Quadranten und den Reife-Ringen) fundierte Geschäftsentscheidungen zu treffen und die Innovationskraft des Unternehmens gezielt zu steuern.
+
+=== 3.2 Deployment Context
+[mermaid]
+....
+graph LR
+    A[Client Browser] -->|"HTTP(S)"| B[Angular SPA]
+    B -->|"API Calls"| C[Node.js/Express API]
+    C -->|"DB Queries"| D[MongoDB]
+    subgraph "Containerisierung & Cloud"
+      C
+      D
+    end
+    E[Nginx Webserver] --> B
+....
+
+Die TechRadar Anwendung ist als Software as a Service konzipiert und wird in einer modernen, containerisierten Umgebung betrieben. Im Deployment Context ergeben sich folgende Rahmenbedingungen:
+
+* **Backend-Umgebung:**
+- Die Anwendung läuft auf einem Node.js-Server, der über Umgebungsvariablen konfiguriert wird (z. B. Datenbank-URLs, JWT-Secrets).
+- Die persistenten Daten werden in einer MongoDB-Datenbank gespeichert, welche über Mongoose angesprochen wird.
+* **Frontend-Umgebung:**
+- Das Angular-basierte Frontend wird als Single-Page-Application (SPA) bereitgestellt.
+- Die Anwendung wird über einen Webserver (z. B. Nginx) ausgeliefert und mit der Backend-API via HTTP(S) verbunden.
+* **Integration und Skalierung:**
+- Eine Containerisierung mittels Docker ermöglicht eine einfache Skalierung und Isolation der einzelnen Komponenten.
+- Die Infrastruktur kann in einer Cloud-Umgebung betrieben werden, um hohe Verfügbarkeit und automatische Skalierung sicherzustellen.
+* **Sicherheits- und Monitoring-Aspekte:**
+- Sicherheitsmechanismen wie JWT-basierte Authentifizierung und rollenbasierte Zugriffskontrolle sind implementiert, um den Zugriff auf sensible Bereiche zu schützen.
+- Monitoring-Tools können zur Überwachung der Server- und Datenbank-Performance sowie zur Protokollierung von Zugriffen und Fehlern integriert werden.
+
+Diese Deployment-Strategie unterstützt die flexible Bereitstellung der Anwendung, gewährleistet eine hohe Skalierbarkeit und ermöglicht es, die Software in verschiedenen Umgebungen (z. B. Entwicklungs-, Test- und Produktionsumgebungen) effizient zu betreiben.
+
+== 4. Lösungsstrategie
+
+Die Lösung basiert auf einer klar getrennten Architektur, die es ermöglicht, Geschäftslogik, Datenzugriff und Präsentation sauber zu trennen. Die Architektur sieht folgende Schichten vor:
+
+* **Backend:**
+- **RESTful API:**
+Die API implementiert alle Geschäftsprozesse und kommuniziert mit der Datenbank über Mongoose. Sie sorgt dafür, dass alle Anfragen zentral verarbeitet und die notwendigen Sicherheits- und Geschäftslogiken angewandt werden.
+- **Rollenbasierter Zugriff:**
+Im Backend erfolgt eine rollenbasierte Überprüfung, die sicherstellt, dass nur berechtigte Benutzer bestimmte Aktionen ausführen können. Konkret:
+- Wenn sich ein Benutzer mit der Rolle *CTO* oder *Tech Lead* anmeldet, erhält er Zugriff auf das **Technologie-Radar-Administration**-Panel. Dieses Panel ermöglicht es, Technologien zu verwalten, zu erfassen, zu publizieren oder zu ändern.
+- Wenn sich ein Benutzer, der administrative Rechte besitzt, anmeldet, wird ein Audit in der Datenbank gespeichert. Dies dient der Nachverfolgbarkeit und Protokollierung aller Anmeldungen, insbesondere von Benutzern mit erweiterten Rechten. Hierbei wird in einem Audit-Log (z. B. in einer separaten Audit-Collection) der Login-Vorgang dokumentiert.
+- **Implementierung:**
+Die rollenbasierte Prüfung wird direkt im Backend durchgeführt – beispielsweise in den Authentifizierungs-Controllern. Hier werden nach erfolgreicher Anmeldung die Benutzerrollen geprüft. Bei Erkennung eines privilegierten Benutzers (CTO oder Tech Lead) wird der Zugriff auf das Admin-Panel erlaubt, und für alle administrativen Anmeldungen wird zusätzlich ein Audit-Eintrag erstellt.
+
+* **Frontend:**
+- **Angular SPA:**
+Das Frontend stellt eine moderne Single-Page-Application bereit, in der Benutzeroberflächen für den allgemeinen Technologie-Radar-Viewer sowie für die Administration implementiert sind.
+- Benutzer mit den Rollen *CTO* oder *Tech Lead* sehen in der Benutzeroberfläche zusätzlich die administrativen Funktionen.
+- Die Authentifizierung erfolgt über das Backend, wobei Tokens (JWT) verwendet werden, um die Benutzeridentität und -rolle zu sichern.
+- **Integration:**
+Ein HTTP-Interceptor fügt bei jedem Request automatisch das JWT hinzu. Das Frontend erhält so stets die aktuellsten Berechtigungen, die durch das Backend überprüft werden.
+
+Diese Lösung sorgt dafür, dass sensible Bereiche der Anwendung nur von berechtigten Benutzern aufgerufen werden können. Die Kombination aus rollenbasierter Zugriffskontrolle im Backend, Audit-Logging bei administrativen Anmeldungen und einem responsiven Frontend gewährleistet sowohl Sicherheit als auch Transparenz in der Verwaltung der Technologie-Radar-Daten.
+
+== 5. Bausteinsicht
+
+In diesem Kapitel wird die interne Struktur der Anwendung detailliert beschrieben. Die Bausteinsicht gliedert sich in die Backend-Bausteine und die Frontend-Bausteine. Die folgenden Unterkapitel geben einen tieferen Einblick in die einzelnen Komponenten und deren Zusammenwirken. Für jeden Bereich wurde ein passendes Mermaid-Diagramm erstellt, das die Beziehungen und Abläufe veranschaulicht.
+
+=== 5.1 Backend-Bausteine
+
+==== 5.1.1 Datenbankmodul
+* Stellt die Verbindung zu MongoDB her.
+* Initialisiert die Datenbank, inklusive automatischer Benutzererstellung.
+* Nutzt Mongoose als ORM zur Datenmodellierung.
+
+[mermaid]
+----
+graph LR
+    A[MongoDB-Datenbank]
+    B[Mongoose ORM]
+    A <---> B
+----
+
+==== 5.1.2 Authentifizierungsmodul
+* Verantwortlich für Registrierung, Login und Token-Management.
+* Implementiert die Erzeugung und Überprüfung von JWTs.
+* Protokolliert Anmeldeversuche in einem Audit-Log, wenn ein Benutzer mit administrativen Rechten (CTO/Tech Lead) sich anmeldet.
+
+[mermaid]
+----
+graph LR
+    A[User Request]
+    B[Auth Controller]
+    C[JWT Generator]
+    D[Audit Log]
+    A --> B
+    B --> C
+    B --> D
+----
+
+==== 5.1.3 Tech-Management
+* Bietet CRUD-Operationen zur Verwaltung von Technologie-Einträgen.
+* Setzt das MVC-Muster um, wobei:
+- Modelle (z. B. Tech, User) den Datenzugriff kapseln,
+- Controller die Geschäftslogik abbilden,
+- RESTful APIs als "View" fungieren.
+* Unterstützt Funktionen zum Erfassen, Ändern und Publizieren von Technologien.
+
+[mermaid]
+----
+graph TD
+    A[Tech Model]
+    B[Tech Controller]
+    C[RESTful API]
+    A --> B
+    B --> C
+----
+
+==== 5.1.4 Systemstatus
+* Überprüft den Verbindungsstatus zur Datenbank.
+* Meldet den Serverstatus.
+* Ermöglicht eine schnelle Diagnose von Verbindungsproblemen.
+
+[mermaid]
+----
+graph LR
+    A[Status Controller] --> B[MongoDB Connection]
+    A --> C[Server Status]
+----
+
+=== 5.2 Frontend-Bausteine
+
+==== 5.2.1 Authentifizierung
+* Realisiert die Benutzeranmeldung und -registrierung.
+* Nutzt reaktive Komponenten (Login und Register Components) zur Eingabevalidierung.
+* Implementiert einen HTTP-Interceptor, der JWTs automatisch an API-Anfragen anhängt.
+* Setzt Route Guards ein, um den Zugriff auf geschützte Bereiche zu sichern.
+
+[mermaid]
+----
+graph LR
+    A[Login Component]
+    B[Register Component]
+    C[Auth Service]
+    D[HTTP Interceptor]
+    A --> C
+    B --> C
+    C --> D
+----
+
+==== 5.2.2 Tech-Management UI
+* Bietet ein Admin-Panel für CTOs und Tech Leads zur Verwaltung von Technologien.
+* Enthält eine Übersichtskomponente („All Tech Component“) und detaillierte Ansichten („Tech Detail Component“) für einzelne Technologie-Einträge.
+* Unterstützt dynamische Formularvalidierung und Echtzeit-Aktualisierungen der Datenanzeige.
+
+[mermaid]
+----
+graph TD
+    A[Admin Panel]
+    B[All Tech Component]
+    C[Tech Detail Component]
+    A --> B
+    B --> C
+----
+
+=== 5.3 Klassendiagramme
+
+Um die Datenmodelle und ihre Beziehungen innerhalb der TechRadar Anwendung besser zu verstehen, wurden folgende Klassendiagramme erstellt.
+
+==== 5.3.1 User & Authentifizierungsmodelle
+
+Dieses Diagramm zeigt die zentralen Klassen für die Benutzerauthentifizierung, inklusive des User-Modells, der RefreshToken-Entität und des Audit-Logs, das administrative Logins protokolliert.
+
+[mermaid]
+----
+classDiagram
+    class User {
+      +String username
+      +String password
+      +String email
+      +String role
+      +Date createdAt
+      +Date updatedAt
+    }
+
+    class RefreshToken {
+      +String token
+      +Date createdAt
+      +Date updatedAt
+    }
+
+    class AuditLogins {
+      +Date loginAt
+      +Date logoutAt
+      +Date createdAt
+      +Date updatedAt
+    }
+
+    User <|-- RefreshToken : owns
+    User <|-- AuditLogins : audited
+----
+
+==== 5.3.2 Tech-Management Modelle
+
+Dieses Diagramm veranschaulicht das Tech-Modell, welches die Grundlage für die Verwaltung und Publikation von Technologien bildet. Es zeigt alle relevanten Attribute, die für die Erfassung, Änderung und Publikation benötigt werden.
+
+[mermaid]
+----
+classDiagram
+    class Tech {
+      +String name
+      +String category
+      +String ring
+      +String techDescription
+      +String classificationDescription
+      +Date publicationDate
+      +String status
+      +Date createdAt
+      +Date updatedAt
+    }
+----
+
+Diese Klassendiagramme unterstützen die Bausteinsicht, indem sie die Kerndatenmodelle und deren Beziehungen übersichtlich darstellen. Sie helfen, die interne Struktur der Anwendung besser zu verstehen und dienen als Grundlage für zukünftige Erweiterungen.
+
+== 6. Laufzeitsicht
+
+Im laufenden Betrieb werden folgende Abläufe realisiert:
+
+* *Anfragefluss*:
+- Ein Benutzer startet eine Anfrage über das Frontend (z. B. Login oder Tech-Operationen).
+- Ein HTTP-Interceptor fügt das JWT dem Request hinzu.
+- Die Anfrage wird an die REST-API gesendet, welche anhand der URL und HTTP-Methode den zuständigen Controller aufruft.
+
+* *Authentifizierung*:
+- Bei der Anmeldung werden Nutzerinformationen validiert, Passwörter mit bcrypt geprüft und Tokens erstellt.
+- Token-Refresh wird automatisch im Interceptor behandelt, falls ein 403-Fehler auftritt.
+
+* *Datenverarbeitung*:
+- Tech-Items werden gruppiert (z. B. nach Kategorie und Reifegrad) und in der Datenbank persistiert.
+
+* *Fehlerbehandlung*:
+- Sowohl Frontend als auch Backend implementieren umfassende Fehlerbehandlungsmechanismen, um den Benutzer freundlich zu informieren und die Systemstabilität zu gewährleisten.
+
+=== 6.1 Laufzeitsicht – Sequenzdiagramm
+
+Im folgenden Sequenzdiagramm wird der typische Ablauf einer Benutzeranfrage (z. B. beim Login oder Abruf von Tech-Daten) dargestellt. Dabei zeigt das Diagramm, wie der Request vom Client über die Angular SPA und den HTTP-Interceptor an die Node.js/Express API weitergeleitet wird. Die API kommuniziert anschließend mit der MongoDB, um die benötigten Daten zu verarbeiten und das Ergebnis zurückzugeben.
+
+[mermaid]
+----
+sequenceDiagram
+    participant U as User
+    participant SPA as Angular SPA
+    participant AG as AuthGuard
+    participant HI as HTTP Interceptor
+    participant API as Node.js/Express API
+    participant DB as MongoDB
+
+    U->>SPA: Initiiert Aktion (z. B. Login oder Abruf von Tech-Daten)
+    SPA->>AG: Anfrage an geschützte Route
+    AG-->>SPA: Berechtigung prüfen (Weiterleitung oder Abbruch)
+    SPA->>HI: Senden des API-Requests mit Anfragedaten
+    HI->>API: JWT anhängen und Request weiterleiten
+    API->>DB: Führe Datenbankabfrage aus (z. B. Benutzervalidierung, Tech-Daten)
+    DB-->>API: Rückgabe der Daten
+    API-->>HI: Sende Antwort (z. B. Authentifizierungsergebnis, Tech-Daten)
+    HI-->>SPA: Leite Antwort an SPA weiter
+    SPA-->>U: Darstellung der Ergebnisse (z. B. Dashboard, Fehlermeldung)
+----
+
+== 7. Einsatzsicht (Deployment View)
+
+
+[mermaid]
+----
+graph LR
+    %% Frontend-Bereich
+    subgraph "Frontend"
+      A["Angular SPA"]
+      B["Nginx Webserver"]
+    end
+
+    %% Backend-Bereich
+    subgraph "Backend"
+      C["Node.js/Express API"]
+      D["Authentication Module"]
+      E["Tech-Management Module"]
+      F["Audit Logging"]
+      G["Mongoose ORM"]
+    end
+
+    %% Datenbank
+    subgraph "Datenbank"
+      H["MongoDB"]
+    end
+
+    %% Verbindungen zwischen den Komponenten
+    B --> A
+    A --> C
+    C --> D
+    C --> E
+    C --> F
+    C --> G
+    G --> H
+----
+
+*Erläuterung:*
+
+* **Frontend:**
+- Der Nginx-Webserver liefert die Angular SPA aus, die als zentrale Benutzeroberfläche dient.
+- Angular-Anwendung, bereitgestellt als SPA.
+- Die Anwendung wird über einen Webserver (z. B. Nginx) ausgeliefert und kommuniziert via HTTP(S) mit der API.
+* **Backend:** Die Node.js/Express API kapselt die Geschäftslogik und teilt sich in mehrere Module auf:
+- Das Authentication Module verwaltet Login, Token-Generierung und rollenbasierte Zugriffskontrolle.
+- Das Tech-Management Module steuert die CRUD-Operationen und die Publikation von Technologien.
+- Audit Logging protokolliert sicherheitsrelevante Aktionen, etwa administrative Anmeldungen.
+- Die Mongoose ORM-Komponente sorgt für den Datenzugriff zur MongoDB.
+- Läuft auf einem Node.js-Server, konfiguriert über Umgebungsvariablen (z. B. Datenbank-URLs, JWT-Secrets).
+- MongoDB wird als Datenbanklösung eingesetzt.
+- **Datenbank:** MongoDB speichert alle persistente Daten, die über das Mongoose ORM vom Backend angesprochen werden.
+
+* **Integration**:
+- Containerisierung (z. B. Docker) ist denkbar, um Backend und Frontend in isolierten Umgebungen zu betreiben.
+
+== 8. Konzepte
+
+Die folgenden Konzepte durchziehen die gesamte TechRadar Anwendung und gewährleisten, dass das System sicher, skalierbar, wartbar und robust im Fehlerfall arbeitet. Im Folgenden werden diese Aspekte in mehrere Unterkapitel unterteilt – jeweils mit einem zugehörigen Diagramm, das die wichtigsten Elemente und deren Beziehungen darstellt.
+
+=== 8.1 Sicherheit
+
+* Verwendung von JWT zur Authentifizierung und zur rollenbasierten Zugriffskontrolle.
+* Verschlüsselung sensibler Daten, insbesondere Passwörter, mittels bcrypt.
+* Zusätzliche Sicherheitsmaßnahmen wie Audit-Logging bei administrativen Anmeldungen.
+
+[mermaid]
+----
+graph TD
+    A[Benutzeranfrage] --> B[Authentifizierungsmodul]
+    B --> C["JWT Token Generator"]
+    B --> D["bcrypt (Passwort-Verschlüsselung)"]
+    B --> E["Audit Logging"]
+    C --> F[Gesicherter Zugriff]
+    D --> F
+    E --> G["Audit-Datenbank"]
+----
+
+*Erläuterung:*
+Dieses Diagramm zeigt, wie die Sicherheitskomponenten zusammenwirken. Die Authentifizierung nutzt JWTs und bcrypt, und bei administrativen Aktionen wird zusätzlich ein Audit-Eintrag erzeugt.
+
+=== 8.2 Skalierbarkeit
+
+* RESTful API-Design und lose Kopplung zwischen Front- und Backend ermöglichen flexible Skalierung.
+* Einsatz von Containerisierung (z. B. Docker) und Cloud-Infrastrukturen zur Unterstützung von Lastspitzen.
+* Horizontale Skalierung der API-Server und Datenbank-Replikation für hohe Verfügbarkeit.
+
+[mermaid]
+----
+graph LR
+    A[Client Requests] --> B[API-Server Cluster]
+    B --> C[Load Balancer]
+    C --> D[Containerisierte Services]
+    D --> E[Cloud Infrastruktur]
+    E --> F[Horizontale Skalierung]
+    D --> G[Replikation & Backup]
+----
+
+*Erläuterung:*
+Das Diagramm veranschaulicht, wie Containerisierung und Cloud-basierte Skalierung zum Einsatz kommen. API-Server werden in Clustern betrieben und über einen Load Balancer verteilt. Datenbank-Replikation und Backup-Strategien erhöhen die Verfügbarkeit.
+
+=== 8.3 Wartbarkeit
+
+* Klare Trennung der Geschäftslogik in eigenständige Module (z. B. Authentifizierung, Tech-Management).
+* Einsatz moderner Frameworks (Angular, Express) zur Förderung einer strukturierten, modularen Entwicklung.
+* Umfangreiche Dokumentation und standardisierte Schnittstellen (RESTful APIs) erleichtern zukünftige Erweiterungen.
+
+[mermaid]
+----
+graph TD
+    A[Modulare Architektur] --> B[Separate Module]
+    A --> C[Standardisierte Schnittstellen]
+    B --> D[Wartbarkeit]
+    C --> D
+    D --> E[Erweiterbarkeit]
+----
+
+*Erläuterung:*
+Dieses Diagramm hebt hervor, wie modulare Strukturen und standardisierte Schnittstellen die Wartbarkeit und Erweiterbarkeit der Anwendung unterstützen.
+
+=== 8.4 Fehlerbehandlung & Logging
+
+* Einheitliche Fehlerbehandlung in Backend und Frontend für konsistentes Benutzerfeedback.
+* Zentralisiertes Logging zur schnellen Diagnose und Behebung von Problemen.
+* Implementierung von globalen Exception-Handlern im Backend und Error-Interceptors im Frontend.
+
+[mermaid]
+----
+graph LR
+    A[Fehler im System] --> B["Global Exception Handler"]
+    A --> C["Error Interceptor (Frontend)"]
+    B --> D["Zentrales Logging"]
+    C --> D
+    D --> E["Monitoring & Alerts"]
+----
+
+*Erläuterung:*
+Das Diagramm zeigt den Fluss von Fehlern: Sowohl im Backend als auch im Frontend werden Fehler zentral erfasst, was die Überwachung und Reaktionsfähigkeit bei Problemen verbessert.
+
+=== 8.5 Validation
+
+* Umfangreiche Validierung auf mehreren Ebenen:
+- Client-seitige Validierung in Angular (Formularvalidierung, Eingabefelder).
+- Server-seitige Validierung im Backend, um nur korrekte und vollständige Daten zu verarbeiten.
+* Einsatz von Framework-Mechanismen und Middleware, um Validierungsregeln zentral zu definieren.
+
+[mermaid]
+----
+graph LR
+    A[Benutzereingabe] --> B[Client-seitige Validierung]
+    B --> C[Angular Form Validierung]
+    A --> D[Server-seitige Validierung]
+    D --> E[Middleware in Express]
+    C --> F[Erstvalidierte Daten]
+    E --> F
+    F --> G[Persistenz in Datenbank]
+----
+
+*Erläuterung:*
+Dieses Diagramm zeigt den Validierungsprozess, bei dem Benutzereingaben zunächst clientseitig geprüft und anschließend serverseitig validiert werden, bevor sie in der Datenbank gespeichert werden.
+
+=== 8.6 Modul-Abhängigkeiten
+
+* Die Anwendung ist in klar abgegrenzte Module unterteilt, die über definierte Schnittstellen miteinander kommunizieren.
+* Jedes Modul (z. B. Authentifizierung, Tech-Management, Audit Logging) ist in sich geschlossen und minimiert externe Abhängigkeiten.
+* Diese lose Kopplung erleichtert das Testen, die Wartung und das spätere Erweitern der einzelnen Module.
+
+[mermaid]
+----
+graph TD
+    A["Authentifizierungsmodul"] --- B["Tech-Management Modul"]
+    A --- C["Audit Logging"]
+    B --- D["Datenbankzugriff (Mongoose)"]
+    C --- D["Datenbankzugriff (Mongoose)"]
+    A --- E["Common Services"]
+    B --- E["Common Services"]
+    C --- E["Common Services"]
+----
+
+*Erläuterung:*
+Das Diagramm veranschaulicht, wie die verschiedenen Module der Anwendung lose gekoppelt und über definierte Schnittstellen miteinander verbunden sind. Dadurch wird die Unabhängigkeit der Module gewährleistet und die Wartbarkeit verbessert.
+
+== 9. Architekturentscheidungen
+
+Dieses Kapitel erläutert die zentralen Architekturentscheidungen, getrennt nach Backend- und Frontend-Aspekten. Dabei wird auch nochmals auf die Bedeutung der SPA (Single-Page Application) im Frontend eingegangen.
+
+=== 9.1 Backend
+
+* **Technologiewahl:**
+- Node.js/Express wird eingesetzt, um eine asynchrone, eventgesteuerte API bereitzustellen, die sich gut für skalierbare und performante Anwendungen eignet.
+- MongoDB kommt als flexible NoSQL-Datenbank zum Einsatz, die eine dynamische Datenhaltung ermöglicht.
+
+* **Modularität und MVC:**
+- Im Backend wurde versucht, das MVC-Muster (Model-View-Controller) umzusetzen.
+- Dabei werden Datenzugriff (Modelle), Geschäftslogik (Controller) und die Darstellung bzw. API-Interaktion (Views) klar getrennt, um die Wartbarkeit und Erweiterbarkeit zu verbessern.
+
+* **Sicherheitskonzept:**
+- Einsatz von JWT zur Verwaltung von Benutzersitzungen.
+- Zusätzlich werden Audit-Logs erstellt, wenn administrative Benutzer (z. B. CTOs oder Tech-Leads) sich anmelden, um sicherheitsrelevante Ereignisse nachvollziehbar zu machen.
+
+*Diagramm (Backend Architektur):*
+
+[mermaid]
+----
+graph TD
+    A[Node.js/Express API] --> B[Authentifizierungsmodul]
+    A --> C[Tech-Management Modul]
+    A --> D[Audit Logging]
+    A --> E[Mongoose ORM]
+    E --> F[MongoDB]
+----
+
+*Erläuterung:*
+Das Diagramm zeigt, wie die Backend-Komponenten zusammenwirken. Die API kommuniziert über spezialisierte Module mit der Datenbank, wobei das Authentifizierungsmodul und das Audit Logging besonders für die Sicherheit zuständig sind.
+
+=== 9.2 Frontend
+
+* **Technologiewahl:**
+- Das Frontend wird mit Angular realisiert. Angular ermöglicht die Entwicklung moderner, dynamischer Benutzeroberflächen und unterstützt dabei eine modulare Strukturierung des Codes.
+
+* **Single-Page Application (SPA):**
+- Die Anwendung wird als SPA umgesetzt, was bedeutet, dass alle Inhalte innerhalb einer einzigen HTML-Seite geladen werden.
+- Navigation und Inhalte werden dynamisch nachgeladen, wodurch schnelle Reaktionszeiten und ein flüssiges Benutzererlebnis gewährleistet sind.
+- Durch die SPA-Architektur wird die Notwendigkeit von wiederholten Seiten-Neuladevorgängen reduziert, was zu einer verbesserten Performance und Benutzerfreundlichkeit führt.
+
+* **Interceptors & Guards:**
+- HTTP-Interceptors werden genutzt, um JWTs automatisch an alle API-Aufrufe anzuhängen.
+- Auth-Guards schützen geschützte Routen, sodass nur berechtigte Benutzer Zugriff auf bestimmte Funktionen haben.
+
+*Diagramm (Frontend Architektur):*
+
+[mermaid]
+----
+graph LR
+    A[Client Browser] --> B[Angular SPA]
+    B --> C[HTTP Interceptor]
+    B --> D[Auth Guard]
+    D --> E[Geschützte Routen]
+    B --> F[UI-Komponenten]
+    F --> G[Tech-Management UI]
+----
+
+*Erläuterung:*
+Das Diagramm veranschaulicht, wie die Angular SPA im Browser arbeitet. Ein HTTP-Interceptor sorgt für die Authentifizierung, während Auth-Guards den Zugriff auf sensible Bereiche kontrollieren. Die UI-Komponenten stellen die dynamischen Ansichten zur Verfügung, beispielsweise für das Tech-Management.
+
+Diese getrennte Betrachtung der Backend- und Frontend-Entscheidungen unterstreicht die modulare und skalierbare Struktur der TechRadar Anwendung und zeigt, wie die SPA-Architektur zur Optimierung des Benutzererlebnisses beiträgt.
+
+=== 9.3 Technologiewahl: Entscheidung für den MEAN Stack
+
+Die Wahl des MEAN Stacks (MongoDB, Express.js, Angular, Node.js) war eine bewusste Entscheidung, die sich aus mehreren Vorteilen für die TechRadar Anwendung ergibt:
+
+* **Einheitliche JavaScript-Umgebung:**
+Da alle Komponenten – sowohl Frontend als auch Backend – auf JavaScript basieren, können Entwickler mit einer einheitlichen Sprache arbeiten. Dies vereinfacht den Entwicklungsprozess und reduziert den Kontextwechsel zwischen unterschiedlichen Programmiersprachen.
+
+* **Skalierbarkeit und Performance:**
+Node.js und Express.js ermöglichen den Aufbau einer asynchronen, event gesteuerten Architektur, die hohe Lasten und parallele Anfragen effizient bewältigen kann. MongoDB als NoSQL-Datenbank bietet zudem flexible, skalierbare Speicherlösungen, die sich gut für dynamische Datenmodelle eignen.
+
+* **Modularität und Wartbarkeit:**
+Angular als modernes Frontend-Framework unterstützt die Entwicklung von Single-Page Applications (SPAs) und fördert durch seine modulare Struktur eine klare Trennung von Komponenten. Dies trägt erheblich zur langfristigen Wartbarkeit und Erweiterbarkeit der Anwendung bei.
+
+* **Community und Ökosystem:**
+Der MEAN Stack verfügt über eine große Entwickler-Community und ein reichhaltiges Ökosystem an Tools und Bibliotheken. Dies ermöglicht schnellen Support und regelmäßige Updates, was besonders in schnelllebigen Projekten von Vorteil ist.
+
+* **Flexibilität:**
+Die lose Kopplung der einzelnen Komponenten des MEAN Stacks erlaubt es, einzelne Module bei Bedarf auszutauschen oder zu erweitern, ohne das Gesamtsystem zu destabilisieren. Dies ist insbesondere im Hinblick auf zukünftige Erweiterungen oder Anpassungen der Anwendung von großem Vorteil.
+
+Insgesamt bietet der MEAN Stack eine moderne, leistungsfähige und flexible Basis, die optimal zu den Anforderungen der TechRadar Anwendung passt.
+
+== 10. Qualitätsanforderungen
+
+* **Performance**:
+- Schnelle Antwortzeiten durch optimierte API-Endpunkte und asynchrone Datenbankzugriffe.
+- Reduzierte Latenzzeiten in der SPA dank effizientem State Management und minimalen DOM-Manipulationen.
+- Caching-Strategien zur Minimierung von wiederholten Datenbankabfragen und zur Beschleunigung von wiederkehrenden Anfragen.
+
+* **Zuverlässigkeit**:
+- Robuste Fehlerbehandlung und Logging gewährleisten einen stabilen Betrieb auch unter hoher Last.
+- Redundante Systeme und automatische Wiederherstellung (z. B. mittels Containerisierung und Cloud-Deployment) minimieren Ausfallzeiten.
+- Implementierung von Monitoring und Alerts, um Systemausfälle frühzeitig zu erkennen und zu beheben.
+
+* **Sicherheit**:
+- Strenge Validierungen und sichere Authentifizierungsmethoden (z. B. JWT, bcrypt, SSL/TLS) schützen sensible Benutzerdaten.
+- Regelmäßige Sicherheitsüberprüfungen und Penetrationstests zur Identifikation und Behebung potenzieller Schwachstellen.
+- Audit-Logging bei administrativen Anmeldungen sorgt für eine nachvollziehbare Protokollierung von sicherheitsrelevanten Ereignissen.
+
+* **Wartbarkeit**:
+- Klare Trennung der Komponenten und modulare Architektur erleichtern zukünftige Erweiterungen und die Pflege des Systems.
+- Einsatz von Best Practices wie Code Reviews, Dokumentation und standardisierten Schnittstellen (RESTful APIs) unterstützen langfristige Wartbarkeit.
+- Nutzung moderner Frameworks (Angular, Express) und einheitlicher Entwicklungsrichtlinien sorgen für konsistenten Code.
+
+* **Benutzerfreundlichkeit**:
+- Eine intuitive Benutzeroberfläche mit klaren Navigations- und Eingabefeldern fördert ein positives Nutzererlebnis.
+- Responsive Design ermöglicht eine optimale Darstellung auf unterschiedlichen Endgeräten (Desktop, Tablet, Smartphone).
+- Konsistentes Feedback (z. B. Fehlermeldungen, Bestätigungen) und klare Interaktionsmuster verbessern die Usability.
+
+* **Skalierbarkeit und Flexibilität**:
+- Horizontale Skalierung der API-Server und Datenbank-Replikation ermöglichen den Betrieb bei steigenden Nutzerzahlen.
+- Containerisierte Deployment-Modelle (z. B. Docker) und Cloud-Infrastrukturen unterstützen flexible Skalierung und schnelle Ressourcenerweiterungen.
+- Eine flexible Architektur erlaubt die Integration neuer Funktionalitäten, ohne bestehende Komponenten zu beeinträchtigen.
+
+* **Testbarkeit**:
+- Die modulare Architektur und lose Kopplung der Komponenten erleichtern das Schreiben von Unit-, Integrations- und End-to-End-Tests.
+- Standardisierte Schnittstellen und umfassende Dokumentation unterstützen die Testautomatisierung.
+- Auch wenn bisher keine automatisierten Tests implementiert wurden, bildet dies einen wichtigen Ansatzpunkt für zukünftige Verbesserungen.
+
+* **Portabilität**:
+- Die Anwendung kann in unterschiedlichen Umgebungen (lokal, in der Cloud, in Containern) ausgeführt werden.
+- Einsatz von Umgebungsvariablen und konfigurierbaren Komponenten ermöglicht eine einfache Anpassung an verschiedene Deployment-Szenarien.
+
+== 11. Risiken und technische Schulden
+
+* **Risiken**:
+- Komplexität im Token-Management: Die Implementierung einer robusten Token-Refresh-Logik birgt potenzielle Sicherheitsrisiken, wenn sie nicht korrekt umgesetzt wird.
+- Integrationsrisiko: Die nahtlose Integration zwischen Backend und Frontend erfordert umfangreiche Tests, um unerwartete Seiteneffekte zu vermeiden.
+* **Technische Schulden**:
+- Unvollständige Automatisierung der Tests: Obwohl grundlegende Tests implementiert wurden, besteht noch Potenzial für eine umfassendere Testabdeckung.
+- Dokumentationslücken: Detaillierte API-Spezifikationen und Fehlerbehandlungsstrategien könnten weiter ausgebaut werden, um zukünftigen Entwicklern den Einstieg zu erleichtern.
+
+== 12. Glossar
+
+* **JWT (JSON Web Token)**:
+- Ein kompakter, URL-sicherer Mechanismus zur Repräsentation von Ansprüchen zwischen zwei Parteien.
+* **MVC (Model-View-Controller)**:
+- Ein Architektur-Muster zur Trennung von Daten, Logik und Präsentation.
+* **SPA (Single-Page Application)**:
+- Eine Webanwendung, die vollständig innerhalb einer einzigen HTML-Seite ausgeführt wird und dynamisch Inhalte nachlädt.
+* **RESTful API**:
+- Ein Architekturstil für die Entwicklung webbasierter Schnittstellen, der auf HTTP-Methoden basiert.
+* **bcrypt**:
+- Eine kryptographische Hashing-Funktion, die häufig zur sicheren Speicherung von Passwörtern verwendet wird.

@@ -1,0 +1,90 @@
+= Arbeitsjournal
+:author: Kevin Forter
+:date: 2025-03-12
+
+Dieses Arbeitsjournal dokumentiert meine Tätigkeiten der letzten drei Wochen im Rahmen des TechRadar Projekts.
+
+== Woche 1 (22 Stunden)
+
+=== 18. Februar 2025 (5 Stunden)
+* Tätigkeiten:
+- Einarbeitung in die arc42-Dokumentationsstruktur und moderne Softwarearchitektur
+- Erste Planung der Gesamtarchitektur (Backend & Frontend)
+
+=== 19. Februar 2025 (4 Stunden)
+* Tätigkeiten:
+- Aufsetzen der Entwicklungsumgebung für Node.js/Express und Angular
+- Einrichtung des initialen Repository-Scaffoldings
+
+=== 20. Februar 2025 (5 Stunden)
+* Tätigkeiten:
+- Entwicklung der grundlegenden Backend-Struktur
+- Aufbau der MongoDB-Verbindung mittels Mongoose
+- Erste Implementierung des Datenbankmoduls
+
+=== 21. Februar 2025 (4 Stunden)
+* Tätigkeiten:
+- Implementierung der Authentifizierungslogik (User Registration, Login)
+- Integration von bcrypt zur sicheren Passwortverschlüsselung
+
+=== 22. Februar 2025 (4 Stunden)
+* Tätigkeiten:
+- Weiterentwicklung des Token-Managements (JWT-Generierung, Refresh-Logik)
+- Erste Integrationstests der Authentifizierungsendpunkte
+
+== Woche 2 (21 Stunden)
+
+=== 25. Februar 2025 (5 Stunden)
+* Tätigkeiten:
+- Aufbau des Frontends: Einrichtung der Angular-Anwendung
+- Erstellung der grundlegenden Angular-Services für Authentifizierung
+
+=== 26. Februar 2025 (4 Stunden)
+* Tätigkeiten:
+- Entwicklung der Login-Komponente mit reaktiven Formularen und Validierung
+- Implementierung von Fehlerbehandlungslogik im Login-Flow
+
+=== 27. Februar 2025 (5 Stunden)
+* Tätigkeiten:
+- Entwicklung der Registrierungs-Komponente inkl. Formularvalidierung
+- Abstimmung der API-Schnittstellen zwischen Frontend und Backend
+
+=== 28. Februar 2025 (4 Stunden)
+* Tätigkeiten:
+- Implementierung des HTTP-Interceptors zur automatischen Token-Verwaltung
+- Testen der Token-Refresh-Logik und Absicherung der API-Aufrufe
+
+=== 01. März 2025 (3 Stunden)
+* Tätigkeiten:
+- Integration erster Guard-Funktionen zum Schutz der Routen
+- Erste Durchläufe und Debugging der kompletten Authentifizierungskette
+
+== Woche 3 (22 Stunden)
+
+=== 04. März 2025 (5 Stunden)
+* Tätigkeiten:
+- Entwicklung des Admin-Panels zur Verwaltung der Tech-Items
+- Implementierung eines reaktiven Formulars mit dynamischer Validierung
+
+=== 05. März 2025 (4 Stunden)
+* Tätigkeiten:
+- Erstellung der Komponente „Alle Tech-Items“ zur Datenvisualisierung
+- Integration von CRUD-Funktionen für Tech-Items im Frontend
+
+=== 06. März 2025 (5 Stunden)
+* Tätigkeiten:
+- Entwicklung der Tech-Detail-Komponente (Detailansicht und Bearbeitungsmodus)
+- Implementierung von Funktionen zur Aktualisierung und Veröffentlichung von Tech-Daten
+
+=== 07. März 2025 (4 Stunden)
+* Tätigkeiten:
+- Intensives Debugging und Integrationstests zwischen Frontend und Backend
+- Optimierung der API-Endpunkte und Behebung von kleineren Fehlern
+
+=== 08. März 2025 (4 Stunden)
+* Tätigkeiten:
+- Abschlussarbeiten: Refactoring des Codes und Optimierung der Anwendung
+- Erstellung der abschließenden Dokumentation (Architektur und Arbeitsjournal)
+- Vorbereitung des finalen Projekt-Reviews
+
+== Gesamtstunden: ca. 65 Stunden

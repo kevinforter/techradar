@@ -1,0 +1,41 @@
+= Fazit & Reflexion
+:author: Kevin Forter
+:date: 2025-03-12
+
+== Was ist gut gelaufen?
+* *Modulare Architektur*:
+Die klare Trennung zwischen Backend und Frontend hat letztlich zu einer übersichtlichen und wartbaren Codebasis geführt. Trotz anfänglicher Schwierigkeiten konnte ein funktionsfähiges System realisiert werden, das die wesentlichen Geschäftsprozesse abbildet.
+* *Sicherheit*:
+Der Einsatz von JWT zur Authentifizierung und die Implementierung einer rollenbasierten Zugriffskontrolle sorgen dafür, dass nur autorisierte Benutzer auf sensible Bereiche zugreifen können. Dies bildet eine solide Grundlage für zukünftige Erweiterungen.
+* *Interaktive Benutzeroberfläche*:
+Das Angular-Frontend bietet eine dynamische und reaktionsfähige Oberfläche, die sowohl Endnutzer als auch Administratoren unterstützt. Insbesondere die Echtzeit-Aktualisierung der Tech-Daten und das intuitive Design haben positiv überzeugt.
+
+== Wo lagen die Herausforderungen?
+
+* **Token-Management**:
+Die Implementierung der Token-Refresh-Logik stellte eine erhebliche Herausforderung dar. Es erforderte sorgfältige Planung und umfangreiche Fehlerbehandlung, um sicherzustellen, dass die Authentifizierungsprozesse unter allen Bedingungen stabil bleiben.
+* **Trennung der Verantwortlichkeiten**:
+Anfangs war es schwierig, eine saubere Trennung zwischen den verschiedenen Schichten (Datenzugriff, Geschäftslogik und Präsentation) zu erreichen. Obwohl das MVC-Muster angestrebt wurde, zeigte sich, dass die Umsetzung in der Praxis zusätzlichen Aufwand erforderte, um klare Grenzen zu ziehen.
+* **Integration zwischen Backend und Frontend**:
+Die nahtlose Integration der RESTful API mit der Angular-Anwendung erforderte wiederholte Anpassungen und Testläufe, um unerwartete Seiteneffekte zu vermeiden.
+* **Herausforderungen mit Angular**:
+- Das Konzept von Angular war nicht von Anfang an klar verständlich. Es gab viele unterschiedliche Ansätze, um Funktionalitäten zu implementieren, was die Auswahl der richtigen Lösung erschwerte.
+- Oftmals waren im Internet unzureichende oder widersprüchliche Informationen zu finden, wodurch die Problemlösung zusätzlich kompliziert wurde.
+- Selbst nach Code-Updates und einem erneuten Build zeigte der Browser häufig alte Fehler an, was auf Caching-Probleme oder unvollständige Aktualisierungen hindeutete.
+* **Fehlende automatisierte Tests**:
+Es wurden keine automatisierten Tests implementiert, was das frühzeitige Erkennen von Fehlern erschwerte und das Risiko von Regressionen bei zukünftigen Änderungen erhöhte.
+
+
+== Was würde ich das nächste Mal anders bzw. besser machen?
+* *Automatisierte Testprozesse*:
+Die Einführung von Unit-, Integrations- und End-to-End-Tests wäre ein zentraler Aspekt für zukünftige Projekte. Automatisierte Tests würden nicht nur die Stabilität erhöhen, sondern auch die Weiterentwicklung erleichtern und das Risiko von Regressionen minimieren.
+* *Verbesserte Trennung der Verantwortlichkeiten*:
+Eine noch konsequentere Anwendung des MVC-Musters und eine striktere Trennung der Schichten sollten von Beginn an stärker in den Entwicklungsprozess integriert werden. Eine klare Architekturdefinition und regelmäßige Code-Reviews könnten helfen, die saubere Trennung zu gewährleisten.
+* *Einrichtung einer CI/CD-Pipeline*:
+Der Aufbau eines Continuous Integration/Continuous Deployment-Systems würde den Entwicklungsprozess beschleunigen und die Qualität der Releases verbessern. Dies würde helfen, häufige und zuverlässige Updates zu realisieren.
+* *Umfangreichere Dokumentation*:
+Eine detailliertere technische Dokumentation, speziell zu API-Spezifikationen und Fehlerbehandlungsstrategien, würde zukünftigen Entwicklern den Einstieg erleichtern und den Wartungsaufwand reduzieren.
+* *Feedback-Schleifen und Iteration*:
+Ein früheres und kontinuierliches Einholen von Nutzerfeedback im Entwicklungsprozess könnte dazu beitragen, die Benutzeroberfläche und Funktionalitäten noch zielgerichteter zu optimieren.
+
+Diese Erkenntnisse und Reflexionen bilden die Grundlage für Verbesserungen in zukünftigen Projekten und helfen dabei, die Herausforderungen aus diesem Projekt systematisch anzugehen.
