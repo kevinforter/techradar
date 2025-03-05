@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
-import { AuthService } from '../services/auth/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 
 export const authInterceptorFn: HttpInterceptorFn = (
