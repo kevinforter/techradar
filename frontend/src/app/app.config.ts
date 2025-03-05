@@ -11,13 +11,13 @@ import {
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
-//import { authInterceptorFn } from './interceptor/auth/auth.interceptor';
+import { authInterceptorFn } from './interceptor/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch() /*withInterceptors([authInterceptorFn])*/),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptorFn])),
   ],
 };
