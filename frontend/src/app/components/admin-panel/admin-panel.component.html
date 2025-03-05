@@ -4,7 +4,11 @@
   <form [formGroup]="addTechForm" (ngSubmit)="onAddTech()">
     <div>
       <label for="name">Name:</label>
-      <input id="name" formControlName="name" />
+      <input
+        id="name"
+        formControlName="name"
+        placeholder="Enter technology name"
+      />
     </div>
     <div>
       <label for="ring">Ring:</label>

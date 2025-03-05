@@ -1,0 +1,15 @@
+ul.tech {
+  list-style: none !important;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+ul li {
+  list-style: none !important;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+a {
+  text-decoration: none !important;
+}

@@ -1,5 +1,13 @@
 <div *ngIf="techForm">
-  <h2>{{ techForm.get('name')?.value | uppercase }} Details</h2>
+  <h2>
+    <ng-container
+      *ngIf="techForm.get('status')?.value === 'draft'; else published"
+    >
+      🏗️
+    </ng-container>
+    <ng-template #published> 🚀 </ng-template
+    >{{ techForm.get('name')?.value | uppercase }} Details
+  </h2>
   <form [formGroup]="techForm" (ngSubmit)="publishTech()">
     <!-- Tech name -->
     <label for="name">Tech name:</label>
@@ -73,21 +81,42 @@
     </ng-template>
     <br />
 
+    <!-- Created At -->
+    <label>Created At:</label>
+    <span>{{
+      techForm.get('createdAt')?.value | date: 'dd/MM/yyyy, HH:mm'
+    }}</span>
+
+    <!-- Updated At -->
+    <label>Updated At:</label>
+    <span>{{
+      techForm.get('updatedAt')?.value | date: 'dd/MM/yyyy, HH:mm'
+    }}</span>
+
+    <!-- Publication Date -->
+    <label>Publication Date:</label>
+    <span>{{
+      techForm.get('publicationDate')?.value | date: 'dd/MM/yyyy, HH:mm'
+    }}</span>
+
     <!-- Publish button (enabled only if every required field has a value) -->
     <button *ngIf="isAuthorized" type="submit" [disabled]="!canPublish">
       Publish
     </button>
     <!-- Update button is visible only in edit mode -->
     <button
-      *ngIf="isAuthorized && editMode"
+      *ngIf="isAuthorized"
       type="button"
+      [disabled]="!editMode"
       (click)="updateTech()"
     >
       Update Tech
     </button>
+    &nbsp;&nbsp;&nbsp;
     <button *ngIf="isAuthorized" type="button" (click)="deleteTech()">
       Delete
     </button>
+    &nbsp;&nbsp;&nbsp;
     <button *ngIf="isAuthorized" type="button" (click)="toggleEdit()">
       {{ editMode ? 'Cancel Edit' : 'Edit' }}
     </button>

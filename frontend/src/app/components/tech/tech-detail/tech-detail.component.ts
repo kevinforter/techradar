@@ -54,7 +54,10 @@ export class TechDetailComponent implements OnInit {
       category: new FormControl('', Validators.required),
       techDescription: new FormControl('', Validators.required),
       classificationDescription: new FormControl('', Validators.required),
-      status: new FormControl(''), // optional status field
+      status: new FormControl(''),
+      createdAt: new FormControl(''),
+      updatedAt: new FormControl(''),
+      publicationDate: new FormControl(''),
     });
     this.techForm.disable();
   }
@@ -85,6 +88,9 @@ export class TechDetailComponent implements OnInit {
               techDescription: tech.techDescription,
               classificationDescription: tech.classificationDescription,
               status: tech.status,
+              createdAt: tech.createdAt,
+              updatedAt: tech.createdAt,
+              publicationDate: tech.publicationDate,
             });
             if (!this.editMode) {
               this.techForm.disable();

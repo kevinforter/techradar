@@ -1,13 +1,21 @@
-<nav>
-  <ng-container *ngIf="(isLoggedIn$ | async) === false">
-    <a routerLink="/login" routerLinkActive="active">Login</a> |
-    <a routerLink="/register" routerLinkActive="active">Register</a>
-  </ng-container>
-  <ng-container *ngIf="(isLoggedIn$ | async) === true">
-    <a routerLink="/logout" routerLinkActive="active">Logout</a>
-    <ng-container *ngIf="isAdmin$ | async">
-      | <a routerLink="/admin" routerLinkActive="active">Admin Panel</a>
-    </ng-container>
-  </ng-container>
-</nav>
-<router-outlet></router-outlet>
+<main class="container">
+  <nav>
+    <!-- You can add any other navbar items here -->
+    <ul>
+      <li><strong>TechRadar</strong></li>
+      <ng-container *ngIf="(isLoggedIn$ | async) === true">
+        <ng-container *ngIf="isAdmin$ | async">
+          <li>
+            <a routerLink="/admin" routerLinkActive="active">Admin Panel</a>
+          </li>
+        </ng-container>
+        <li>
+          <a routerLink="/logout" routerLinkActive="active" role="button"
+            >Logout</a
+          >
+        </li>
+      </ng-container>
+    </ul>
+  </nav>
+  <router-outlet></router-outlet>
+</main>

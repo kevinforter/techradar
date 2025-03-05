@@ -15,9 +15,9 @@
       *ngFor="let category of getKeys(arrTech)"
       (click)="setActiveCategory(category)"
       [class.active]="activeCategory === category"
-      style="display: inline-block; padding: 10px; cursor: pointer"
+      style="display: inline-block; padding: 20px; cursor: pointer"
     >
-      {{ category }}
+      {{ category | uppercase }}
     </li>
   </ul>
 </nav>
@@ -26,19 +26,23 @@
 <div *ngIf="activeCategory === 'all'">
   <!-- Iterate over each category when "All" is selected -->
   <div *ngFor="let category of getKeys(arrTech)">
-    <h3>{{ category }}</h3>
+    <h3>{{ category | uppercase }}</h3>
     <!-- Iterate over maturity groups within each category -->
     <div *ngFor="let maturity of getKeys(arrTech[category])">
-      <h4>{{ maturity }}</h4>
+      <h4>{{ maturity | uppercase }}</h4>
       <ul class="tech">
         <!-- Iterate over each tech item in the maturity group -->
         <li *ngFor="let tech of arrTech[category][maturity]">
           <ng-container *ngIf="isAdminPanel">
             <input type="checkbox" (change)="onSelectTech($event, tech._id)" />
-            <button routerLink="/detail/{{ tech._id }}">Edit</button>
+            <a routerLink="/detail/{{ tech._id }}" data-tooltip="Edit">✏️</a>
           </ng-container>
+          <ng-container *ngIf="tech.status === 'draft'; else published">
+            🏗️
+          </ng-container>
+          <ng-template #published> 🚀 </ng-template>
           <a routerLink="/detail/{{ tech._id }}">
-            <span class="badge">{{ tech.name }}</span> {{ tech.status }}
+            <span class="badge">{{ tech.name }}</span>
           </a>
         </li>
       </ul>
@@ -47,24 +51,30 @@
 </div>
 
 <!-- Display only the selected category -->
+<!-- TODO: Show Tech as Card and Route for edit component -->
+
 <div *ngIf="activeCategory !== 'all'">
-  <h3>{{ activeCategory }}</h3>
+  <h3>{{ activeCategory | uppercase }}</h3>
   <div *ngFor="let maturity of getKeys(arrTech[activeCategory])">
-    <h4>{{ maturity }}</h4>
+    <h4>{{ maturity | uppercase }}</h4>
     <ul class="tech">
       <li *ngFor="let tech of arrTech[activeCategory][maturity]">
         <ng-container *ngIf="isAdminPanel">
           <input type="checkbox" (change)="onSelectTech($event, tech._id)" />
-          <button routerLink="/detail/{{ tech._id }}">Edit</button>
+          <a routerLink="/detail/{{ tech._id }}" data-tooltip="Edit">✏️</a>
         </ng-container>
+        <ng-container *ngIf="tech.status === 'draft'; else published">
+          🏗️
+        </ng-container>
+        <ng-template #published> 🚀 </ng-template>
         <a routerLink="/detail/{{ tech._id }}">
-          <span class="badge">{{ tech.name }}</span> {{ tech.status }}
+          <span class="badge">{{ tech.name }}</span>
         </a>
       </li>
     </ul>
   </div>
 </div>
-
+<br />
 <button
   *ngIf="isAdminPanel"
   (click)="deleteSelectedTechs()"
